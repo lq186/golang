@@ -6,4 +6,4 @@ log:
   path: ./logs
   level: debug
   format: |
-    %millisecond_format% (%function% %line%) [%level_string%] %body%
+    %millisecond_format% (%file% %line%) [%level_string%] %body%

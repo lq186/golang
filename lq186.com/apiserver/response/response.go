@@ -12,6 +12,7 @@ const (
 const (
 	SystemError = -99
 	JsonError   = -1
+	TokenError 	= -2
 )
 
 func WriteJsonData(writer http.ResponseWriter, data Data) {

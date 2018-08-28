@@ -6,5 +6,5 @@ import (
 )
 
 func Login(writer http.ResponseWriter, request *http.Request) {
-	response.WriteJsonData(writer, response.Data{Code:response.Success, Data:"Signin Success"})
+	response.WriteJsonData(writer, response.Data{Code: response.Success, Data: "Signin Success"})
 }

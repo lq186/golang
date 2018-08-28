@@ -11,7 +11,7 @@ const (
 
 const (
 	SystemError = -99
-	JsonError = -1
+	JsonError   = -1
 )
 
 func WriteJsonData(writer http.ResponseWriter, data Data) {
@@ -33,7 +33,7 @@ func addJsonHeader(response http.ResponseWriter) {
 }
 
 type Data struct {
-	Code int
+	Code    int
 	Message string
-	Data interface{}
+	Data    interface{}
 }

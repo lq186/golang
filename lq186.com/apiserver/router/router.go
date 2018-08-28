@@ -5,6 +5,6 @@ import (
 	"net/http"
 )
 
-func AddRouter()  {
+func AddRouter() {
 	http.HandleFunc("/api/user/login", user.Login)
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/lq186/golang/lq186.com/apiserver/config"
+	"github.com/lq186/golang/lq186.com/apiserver/db"
 	"github.com/lq186/golang/lq186.com/apiserver/log"
 	"github.com/lq186/golang/lq186.com/apiserver/router"
 	"net/http"
@@ -13,6 +14,8 @@ const (
 )
 
 func main() {
+	defer db.DB.Close()
+
 	router.AddRouter()
 	listenHost := getListenHost()
 	log.Log.Infof("Server start listen at: %s", listenHost)

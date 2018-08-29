@@ -1,6 +1,6 @@
 host: 0.0.0.0:8080
 
-db-url: golang_api:golang_api_123/golang_api?charset=utf8mb4&parseTime=True&loc=Local
+db-url: golang_api:golang_api_123@tcp(localhost:3306)/golang_api?charset=utf8mb4&parseTime=True&loc=Local
 
 log:
   path: ./logs

@@ -13,6 +13,9 @@ const (
 	SystemError = -99
 	JsonError   = -1
 	TokenError 	= -2
+	ParamError	= -3
+	DBError	= -4
+	BusinessError = -5
 )
 
 func WriteJsonData(writer http.ResponseWriter, data Data) {

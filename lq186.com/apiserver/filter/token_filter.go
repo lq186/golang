@@ -5,6 +5,7 @@ import (
 	"github.com/lq186/golang/lq186.com/apiserver/log"
 	"github.com/lq186/golang/lq186.com/apiserver/response"
 	"net/http"
+	"github.com/lq186/golang/lq186.com/apiserver/user"
 )
 
 func TokenHandle(w http.ResponseWriter, r *http.Request) bool {
@@ -39,5 +40,5 @@ func TokenHandle(w http.ResponseWriter, r *http.Request) bool {
 // checkedToken check token in db and whether available
 func checkedToken(token string) bool {
 	fmt.Println("check token: ", token)
-	return true
+	return user.ExistsValidToken(token)
 }

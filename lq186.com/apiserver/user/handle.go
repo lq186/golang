@@ -5,6 +5,7 @@ import (
 	"github.com/lq186/golang/lq186.com/apiserver/db"
 	"github.com/lq186/golang/lq186.com/apiserver/response"
 	"net/http"
+	"time"
 )
 
 func LoginHandle(writer http.ResponseWriter, request *http.Request) {
@@ -24,8 +25,7 @@ func LoginHandle(writer http.ResponseWriter, request *http.Request) {
 		response.WriteJsonData(writer, response.Data{Code: response.BusinessError, Message: err.Error()})
 		return
 	}
-
-	response.WriteJsonData(writer, response.Data{Code: response.Success, Data: user.Token})
+	response.WriteJsonData(writer, response.Data{Code: response.Success, Data: map[string]interface{}{"Token": user.Token, "ExpirseAt": -time.Since(user.TokenExpirseAt) / time.Second}})
 }
 
 func checkLoginBody(writer http.ResponseWriter, body *LoginBody) bool {

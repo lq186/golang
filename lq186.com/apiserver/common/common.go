@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+	"github.com/satori/go.uuid"
 )
 
 func RandomString(length int) string {
@@ -45,4 +46,12 @@ func CheckEmptyParam(writer http.ResponseWriter, paramName string, paramVal stri
 		return false
 	}
 	return true
+}
+
+func UUID() (string, error) {
+	uuid, err := uuid.NewV4()
+	if err != nil {
+		return "", err
+	}
+	return strings.Replace(uuid.String(), "-", "", 4), nil
 }

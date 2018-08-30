@@ -24,6 +24,8 @@ func init() {
 		return tablePrefix + defaultTableName
 	}
 
+	DB.LogMode(true)
+
 	// auto create tables
 	DB.AutoMigrate(&User{}, &Directory{}, &Article{}, &ArticleDetail{})
 }

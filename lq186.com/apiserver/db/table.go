@@ -5,6 +5,8 @@ import "time"
 type User struct {
 	ID 				string `gorm:"type:varchar(32);primary key:id;"`
 	Email			string `gorm:"type:varchar(30);unique_index"`
+	Nickname		string `gorm:"type:varchar(30);"`
+	HeadImg			string `gorm:"type:varchar(128);"`
 	Pwd				string `gorm:"type:varchar(32);not null"`
 	Salt			string `gorm:"type:varchar(8);not null"`
 	Err				uint

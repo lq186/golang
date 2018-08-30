@@ -20,6 +20,22 @@ func Create(user *db.User) error {
 	return db.DB.Create(user).Error
 }
 
+func Update(user *db.User) error {
+	var oldUser db.User
+	err := db.DB.First(&oldUser, "token = ?", user.Token).Error
+	if err != nil {
+		log.Log.Debugf("Query by token (%s) error, more info: %v", user.Token, err.Error())
+		return err
+	}
+
+	err = db.DB.Model(&oldUser).Update(db.User{Nickname: user.Nickname, HeadImg: user.HeadImg}).Error
+	if err != nil {
+		log.Log.Errorf("Update user (id: %s) error, more info: %v", user.ID, err.Error())
+		return err
+	}
+	return nil
+}
+
 func Login(body *LoginBody) (*db.User, error) {
 
 	var user db.User
@@ -41,7 +57,7 @@ func Login(body *LoginBody) (*db.User, error) {
 	user.Token = token
 	user.TokenExpirseAt = time.Now().Add(2 * time.Hour)
 
-	err = db.DB.Model(&user).Update(db.User{Token:user.Token, TokenExpirseAt:user.TokenExpirseAt}).Error
+	err = db.DB.Model(&user).Update(db.User{Token:user.Token, TokenExpirseAt:user.TokenExpirseAt, LoginIp: body.Ip, LoginAt:time.Now()}).Error
 	if err != nil {
 		log.Log.Errorf("Update user error, more info: %v", err.Error())
 		return nil, err

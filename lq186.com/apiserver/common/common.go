@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/lq186/golang/lq186.com/apiserver/response"
 	"io/ioutil"
@@ -38,6 +39,18 @@ func JsonUnmarshal(request *http.Request, value interface{}) error {
 	}
 	defer request.Body.Close()
 	return json.Unmarshal(body, value)
+}
+
+func RequestForm(request *http.Request, paramName string, emptyCheck bool) (string, error) {
+	paramValues := request.Form[paramName]
+	if len(paramValues) == 0 {
+		return "", errors.New(fmt.Sprintf("Parameter %s not found", paramName))
+	}
+	paramValue := strings.Trim(paramValues[0], " ")
+	if emptyCheck && "" == paramValue {
+		return "", errors.New(fmt.Sprintf("Parameter %s should not be empty", paramName))
+	}
+	return paramValue, nil
 }
 
 func CheckEmptyParam(writer http.ResponseWriter, paramName string, paramVal string) bool {

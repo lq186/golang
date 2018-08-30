@@ -13,5 +13,5 @@ func init()  {
 func AddRouter() {
 	http.HandleFunc("/api/user/login", user.LoginHandle)
 	http.HandleFunc("/api/user/add", user.AddHandle)
-	http.HandleFunc("/api/user/update", filter.Filter(user.LoginHandle))
+	http.HandleFunc("/api/user/update", filter.Filter(user.UpdateHandle))
 }

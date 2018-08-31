@@ -20,15 +20,8 @@ func Create(user *db.User) error {
 	return db.DB.Create(user).Error
 }
 
-func Update(user *db.User) error {
-	var oldUser db.User
-	err := db.DB.First(&oldUser, "token = ?", user.Token).Error
-	if err != nil {
-		log.Log.Debugf("Query by token (%s) error, more info: %v", user.Token, err.Error())
-		return err
-	}
-
-	err = db.DB.Model(&oldUser).Update(db.User{Nickname: user.Nickname, HeadImg: user.HeadImg}).Error
+func Update(user *db.User, tokenUser *db.User) error {
+	err := db.DB.Model(tokenUser).Update(db.User{Nickname: user.Nickname, HeadImg: user.HeadImg}).Error
 	if err != nil {
 		log.Log.Errorf("Update user (id: %s) error, more info: %v", user.ID, err.Error())
 		return err
@@ -79,6 +72,21 @@ func ExistsValidToken(token string) bool {
 	}
 
 	return "" != user.ID
+}
+
+func TokenUser(token string) (*db.User, error) {
+	var user db.User
+	err := db.DB.First(&user, "token = ? and token_expirse_at > ?", token, time.Now()).Error
+	if err != nil {
+		log.Log.Debugf("Query token error, more info: %v", err.Error())
+		return nil, err
+	}
+
+	if "" != user.ID {
+		return &user, nil
+	}
+
+	return nil, errors.New("Invalid token")
 }
 
 func password(pwd string, salt string) string {

@@ -58,30 +58,18 @@ func AddHandle(writer http.ResponseWriter, request *http.Request) {
 	response.WriteJsonData(writer, response.Data{Code: response.Success, Data: user.ID})
 }
 
-func UpdateHandle(writer http.ResponseWriter, request *http.Request) {
+func UpdateHandle(writer http.ResponseWriter, request *http.Request, filterData map[string]interface{}) {
 
-	err := request.ParseForm()
-	if err != nil {
-		response.WriteJsonData(writer, response.Data{Code: response.ParamError, Message: err.Error()})
-		return
-	}
-
-	token, err := common.RequestForm(request, "token", true)
-	if err != nil {
-		response.WriteJsonData(writer, response.Data{Code: response.TokenError, Message: err.Error()})
-		return
-	}
+	tokenUser := filterData[common.TokenUser].(*db.User)
 
 	var user db.User
-	err = common.JsonUnmarshal(request, &user)
+	err := common.JsonUnmarshal(request, &user)
 	if err != nil {
 		response.WriteJsonData(writer, response.Data{Code: response.ParamError, Message: err.Error()})
 		return
 	}
 
-	user.Token = token
-
-	err = Update(&user)
+	err = Update(&user, tokenUser)
 	if err != nil {
 		response.WriteJsonData(writer, response.Data{Code: response.DBError, Message: err.Error()})
 		return
@@ -92,6 +80,28 @@ func UpdateHandle(writer http.ResponseWriter, request *http.Request) {
 	data["HeadImg"] = user.HeadImg
 
 	response.WriteJsonData(writer, response.Data{Code: response.Success, Data: data})
+}
+
+func CheckToken(writer http.ResponseWriter, request *http.Request) (bool, *db.User) {
+	err := request.ParseForm()
+	if err != nil {
+		response.WriteJsonData(writer, response.Data{Code: response.ParamError, Message: err.Error()})
+		return false, nil
+	}
+
+	token, err := common.RequestForm(request, "token", true)
+	if err != nil {
+		response.WriteJsonData(writer, response.Data{Code: response.TokenError, Message: err.Error()})
+		return false, nil
+	}
+
+	user, err := TokenUser(token)
+	if err != nil {
+		response.WriteJsonData(writer, response.Data{Code: response.TokenError, Message: err.Error()})
+		return false, nil
+	}
+
+	return true, user
 }
 
 type LoginBody struct {

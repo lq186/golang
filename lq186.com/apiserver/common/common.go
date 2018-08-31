@@ -15,6 +15,10 @@ import (
 	"github.com/satori/go.uuid"
 )
 
+const (
+	TokenUser = "TokenUser"
+)
+
 func RandomString(length int) string {
 	str := "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()"
 	bytes := []byte(str)

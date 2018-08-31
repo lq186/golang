@@ -1,14 +1,14 @@
 package filter
 
 import (
-	"fmt"
 	"github.com/lq186/golang/lq186.com/apiserver/log"
 	"github.com/lq186/golang/lq186.com/apiserver/response"
 	"net/http"
 	"github.com/lq186/golang/lq186.com/apiserver/user"
+	"github.com/lq186/golang/lq186.com/apiserver/common"
 )
 
-func TokenHandle(w http.ResponseWriter, r *http.Request) bool {
+func TokenHandle(w http.ResponseWriter, r *http.Request, data map[string]interface{}) bool {
 
 	err := r.ParseForm()
 	if err != nil {
@@ -28,17 +28,13 @@ func TokenHandle(w http.ResponseWriter, r *http.Request) bool {
 		return false
 	}
 
-	if !checkedToken(token) {
-		response.WriteJsonData(w, response.Data{Code:response.TokenError, Message: "Invalid token found."})
+	tokenUser, err := user.TokenUser(token)
+	if err != nil {
+		response.WriteJsonData(w, response.Data{Code:response.TokenError, Message: err.Error()})
 		return false
 	}
 
+	data[common.TokenUser] = tokenUser
 	return true
 
-}
-
-// checkedToken check token in db and whether available
-func checkedToken(token string) bool {
-	fmt.Println("check token: ", token)
-	return user.ExistsValidToken(token)
 }

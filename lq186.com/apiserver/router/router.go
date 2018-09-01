@@ -17,4 +17,7 @@ func AddRouter() {
 	http.HandleFunc("/api/user/update", filter.Filter(user.UpdateHandle))
 
 	http.HandleFunc("/api/dir/add", filter.Filter(directory.AddHandle))
+	http.HandleFunc("/api/dir/update", filter.Filter(directory.UpdateHandle))
+	http.HandleFunc("/api/dir/remove", filter.Filter(directory.RemoveHandle))
+	http.HandleFunc("/api/dir/list-all", filter.Filter(directory.ListAllHandle))
 }

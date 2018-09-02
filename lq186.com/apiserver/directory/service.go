@@ -111,8 +111,45 @@ func Remove(dir *db.Directory, tokenUser *db.User) error {
 		return err
 	}
 
+	// Remove sub Directories
+	subDirs, err := GetSubDir(dir.ID)
+	if err != nil {
+		log.Log.Errorf("Get sub directories error, more info: %v", err)
+		tx.Rollback()
+		return err
+	}
+	if len(subDirs) > 0 {
+		subDirIDs := []string{}
+		for _, dir := range subDirs {
+			subDirIDs = append(subDirIDs, dir.ID)
+		}
+		err = db.DB.Unscoped().Delete(&db.Directory{}, "id in (?)", subDirIDs).Error
+		if err != nil {
+			log.Log.Errorf("Delete sub directories error, more info: %v", err)
+			tx.Rollback()
+			return err
+		}
+	}
+
 	// Remove Article and ArticleDetail
 
 
 	return tx.Commit().Error
+}
+
+func GetSubDir(pid string) ([]*db.Directory, error) {
+	dirs := []*db.Directory{}
+	err := db.DB.Find(&dirs, "p_id = ?", pid).Error
+	if err != nil {
+		return nil, err
+	}
+	subDirs := []*db.Directory{}
+	subDirs = append(subDirs, dirs...)
+	for _, dir := range dirs {
+		tmpSubDirs, err := GetSubDir(dir.ID)
+		if err != nil {
+			subDirs = append(subDirs, tmpSubDirs...)
+		}
+	}
+	return subDirs, nil
 }

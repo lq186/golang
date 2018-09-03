@@ -6,6 +6,7 @@ import (
 	"time"
 	"github.com/lq186/golang/lq186.com/apiserver/log"
 	"github.com/pkg/errors"
+	"github.com/jinzhu/gorm"
 )
 
 func Create(user *db.User) error {
@@ -22,10 +23,12 @@ func Create(user *db.User) error {
 
 func Update(user *db.User, tokenUser *db.User) error {
 	err := db.DB.Model(tokenUser).Update(db.User{Nickname: user.Nickname, HeadImg: user.HeadImg}).Error
+
 	if err != nil {
 		log.Log.Errorf("Update user (id: %s) error, more info: %v", user.ID, err.Error())
 		return err
 	}
+
 	return nil
 }
 
@@ -33,13 +36,14 @@ func Login(body *LoginBody) (*db.User, error) {
 
 	var user db.User
 	err := db.DB.First(&user, "email = ? and ( err <= ? or login_at < ? )", body.Username, 5, time.Now().Add(-10 * time.Minute)).Error
+
+	if err == gorm.ErrRecordNotFound {
+		return nil, errors.New("User not found.")
+	}
+
 	if err != nil {
 		log.Log.Errorf("Query user error, more info: %v", err.Error())
 		return nil, err
-	}
-
-	if "" == user.ID {
-		return nil, errors.New("User not found.")
 	}
 
 	if password(body.Password, user.Salt) != user.Pwd {
@@ -63,30 +67,20 @@ func Login(body *LoginBody) (*db.User, error) {
 
 }
 
-func ExistsValidToken(token string) bool {
-	var user db.User
-	err := db.DB.First(&user, "token = ? and token_expirse_at > ?", token, time.Now()).Error
-	if err != nil {
-		log.Log.Debugf("Query token error, more info: %v", err.Error())
-		return false
-	}
-
-	return "" != user.ID
-}
-
 func TokenUser(token string) (*db.User, error) {
 	var user db.User
 	err := db.DB.First(&user, "token = ? and token_expirse_at > ?", token, time.Now()).Error
+
+	if err == gorm.ErrRecordNotFound {
+		return nil, errors.New("Invalid token")
+	}
+
 	if err != nil {
 		log.Log.Debugf("Query token error, more info: %v", err.Error())
 		return nil, err
 	}
 
-	if "" != user.ID {
-		return &user, nil
-	}
-
-	return nil, errors.New("Invalid token")
+	return &user, nil
 }
 
 func password(pwd string, salt string) string {

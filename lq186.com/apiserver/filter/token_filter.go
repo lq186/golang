@@ -30,7 +30,7 @@ func TokenHandle(w http.ResponseWriter, r *http.Request, data map[string]interfa
 
 	tokenUser, err := user.TokenUser(token)
 	if err != nil {
-		response.WriteJsonData(w, response.Data{Code:response.TokenError, Message: "Query token error, more info: " + err.Error()})
+		response.WriteJsonData(w, response.Data{Code:response.TokenError, Message: err.Error()})
 		return false
 	}
 

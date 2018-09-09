@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func LoginHandle(writer http.ResponseWriter, request *http.Request) {
+func LoginHandle(writer http.ResponseWriter, request *http.Request, filterData map[string]interface{}) {
 	var loginBody LoginBody
 	err := common.JsonUnmarshal(request, &loginBody)
 	if err != nil {
@@ -41,7 +41,7 @@ func checkLoginBody(writer http.ResponseWriter, body *LoginBody) bool {
 	return common.CheckEmptyParam(writer, "username", body.Username) && common.CheckEmptyParam(writer, "password", body.Password)
 }
 
-func AddHandle(writer http.ResponseWriter, request *http.Request) {
+func AddHandle(writer http.ResponseWriter, request *http.Request, filterData map[string]interface{}) {
 	var user db.User
 	err := common.JsonUnmarshal(request, &user)
 	if err != nil {

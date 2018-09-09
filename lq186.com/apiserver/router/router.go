@@ -8,16 +8,17 @@ import (
 )
 
 func init()  {
-	filter.Add("/api/.*", filter.TokenHandle)
+	filter.Add("/api/.*", filter.OptionsHandle)
+	filter.Add("/api/auth/.*", filter.TokenHandle)
 }
 
 func AddRouter() {
-	http.HandleFunc("/api/user/login", user.LoginHandle)
-	http.HandleFunc("/api/user/add", user.AddHandle)
-	http.HandleFunc("/api/user/update", filter.Filter(user.UpdateHandle))
+	http.HandleFunc("/api/user/login", filter.Filter(user.LoginHandle))
+	http.HandleFunc("/api/user/add", filter.Filter(user.AddHandle))
+	http.HandleFunc("/api/auth/user/update", filter.Filter(user.UpdateHandle))
 
-	http.HandleFunc("/api/dir/add", filter.Filter(directory.AddHandle))
-	http.HandleFunc("/api/dir/update", filter.Filter(directory.UpdateHandle))
-	http.HandleFunc("/api/dir/remove", filter.Filter(directory.RemoveHandle))
+	http.HandleFunc("/api/auth/dir/add", filter.Filter(directory.AddHandle))
+	http.HandleFunc("/api/auth/dir/update", filter.Filter(directory.UpdateHandle))
+	http.HandleFunc("/api/auth/dir/remove", filter.Filter(directory.RemoveHandle))
 	http.HandleFunc("/api/dir/list-all", filter.Filter(directory.ListAllHandle))
 }

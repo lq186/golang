@@ -1,2 +1,0 @@
-{"timestamp":1536754607,"timestamp_format":"2018-09-12 20:16:47","millisecond":1536754607224,"millisecond_format":"2018-09-12 20:16:47.224","level":6,"level_string":"Info","body":"Server start listen at: 0.0.0.0:8080","file":"main.go","line":21,"function":"main.main"}
-{"timestamp":1536754752,"timestamp_format":"2018-09-12 20:19:12","millisecond":1536754752197,"millisecond_format":"2018-09-12 20:19:12.197","level":6,"level_string":"Info","body":"Server start listen at: 0.0.0.0:8080","file":"main.go","line":21,"function":"main.main"}

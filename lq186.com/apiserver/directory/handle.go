@@ -58,8 +58,7 @@ func UpdateHandle(writer http.ResponseWriter, request *http.Request, filterData 
 
 func ListAllHandle(writer http.ResponseWriter, request *http.Request, filterData map[string]interface{}) {
 
-	tokenUser := filterData[common.TokenUser].(*db.User)
-	dirs, err := ListAll(tokenUser)
+	dirs, err := ListAll()
 	if err != nil {
 		response.WriteJsonData(writer, response.Data{Code: response.DBError, Message: "Query directory error, more info: " + err.Error()})
 		return

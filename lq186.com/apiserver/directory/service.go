@@ -91,9 +91,9 @@ func Update(dir *db.Directory, tokenUser *db.User) error {
 	return db.DB.Save(&oldDir).Error
 }
 
-func ListAll(tokenUser *db.User) ([]*db.Directory, error) {
+func ListAll() ([]*db.Directory, error) {
 	var dirs = []*db.Directory{}
-	err := db.DB.Order("dir_name asc").Find(&dirs, "user_id = ?", tokenUser.ID).Error
+	err := db.DB.Order("dir_name asc").Find(&dirs).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		log.Log.Errorf("Query directory error, more info: %v", err)
 		return nil, err

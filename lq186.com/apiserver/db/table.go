@@ -23,6 +23,7 @@ type Directory struct {
 	UserID	string `gorm:"type:varchar(32);not null;"`
 	DirName	string `gorm:"type:varchar(64);not null;"`
 	PID		string `gorm:"type:varchar(32);not null;"`
+	Lang	string `gorm:"type:varchar(16);not null;"`
 	SerNo	uint
 }
 
@@ -34,6 +35,7 @@ type Article struct {
 	CreateAt	time.Time
 	Read 		uint
 	IsTop		bool
+	Lang		string `gorm:"type:varchar(16);not null;"`
 }
 
 type ArticleDetail struct {

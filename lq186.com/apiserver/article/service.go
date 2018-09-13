@@ -27,6 +27,7 @@ func Create(requestBody *CreateRequestBody, tokenUser *db.User) (*db.Article, er
 	article.Title = requestBody.Title
 	article.DirID = requestBody.DirID
 	article.IsTop = requestBody.IsTop
+	article.Lang = requestBody.Lang
 
 	tx := db.DB.Begin()
 
@@ -147,7 +148,7 @@ func ListPage(requestBody *ListPageRequestBody) (*common.Page, error) {
 	var articles = []*db.Article{}
 	var count = uint32(0)
 
-	err := db.DB.Order("is_top desc, create_at desc").Find(&db.Article{}).Count(&count).Offset((requestBody.Page - 1) * requestBody.Size).Limit(requestBody.Size).Find(&articles).Error
+	err := db.DB.Order("is_top desc, create_at desc").Where("lang = ?", requestBody.Lang).Find(&db.Article{}).Count(&count).Offset((requestBody.Page - 1) * requestBody.Size).Limit(requestBody.Size).Find(&articles).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		log.Log.Errorf("query Articles failed, more info: %v", err)
 		return nil, err

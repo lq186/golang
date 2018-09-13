@@ -18,6 +18,10 @@ func AddHandle(writer http.ResponseWriter, request *http.Request, filterData map
 		return
 	}
 
+	if dir.Lang == "" {
+		dir.Lang = filterData[common.Lang].(string)
+	}
+
 	err = Create(&dir, tokenUser);
 	if err != nil {
 		response.WriteJsonData(writer, response.Data{Code: response.DBError, Message: err.Error()})
@@ -28,6 +32,8 @@ func AddHandle(writer http.ResponseWriter, request *http.Request, filterData map
 	data["ID"] = dir.ID
 	data["Name"] = dir.DirName
 	data["PID"] = dir.PID
+	data["SerNo"] = dir.SerNo
+	data["Lang"] = dir.Lang
 
 	response.WriteJsonData(writer, response.Data{Code: response.Success, Data: data})
 }
@@ -52,13 +58,17 @@ func UpdateHandle(writer http.ResponseWriter, request *http.Request, filterData 
 	data["ID"] = dir.ID
 	data["Name"] = dir.DirName
 	data["PID"] = dir.PID
+	data["SerNo"] = dir.SerNo
+	data["Lang"] = dir.Lang
 
 	response.WriteJsonData(writer, response.Data{Code: response.Success, Data: data})
 }
 
 func ListAllHandle(writer http.ResponseWriter, request *http.Request, filterData map[string]interface{}) {
 
-	dirs, err := ListAll()
+	lang := filterData[common.Lang].(string)
+
+	dirs, err := ListAll(lang)
 	if err != nil {
 		response.WriteJsonData(writer, response.Data{Code: response.DBError, Message: "Query directory error, more info: " + err.Error()})
 		return

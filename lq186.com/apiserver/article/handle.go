@@ -30,6 +30,10 @@ func AddHandle(writer http.ResponseWriter, request *http.Request, filterData map
 		return
 	}
 
+	if requestBody.Lang == "" {
+		requestBody.Lang = filterData[common.Lang].(string)
+	}
+
 	article, err := Create(&requestBody, tokenUser);
 	if err != nil {
 		response.WriteJsonData(writer, response.Data{Code: response.DBError, Message: err.Error()})
@@ -91,6 +95,8 @@ func ListPageHandle(writer http.ResponseWriter, request *http.Request, filterDat
 		requestBody.Size = 10
 	}
 
+	requestBody.Lang = filterData[common.Lang].(string)
+
 	page, err := ListPage(&requestBody)
 	if err != nil {
 		response.WriteJsonData(writer, response.Data{Code: response.DBError, Message: "Query directory error, more info: " + err.Error()})
@@ -147,6 +153,7 @@ type CreateRequestBody struct {
 	Title		string
 	Content		string
 	IsTop		bool
+	Lang		string
 }
 
 type UpdateRequestBody struct {
@@ -155,6 +162,7 @@ type UpdateRequestBody struct {
 	Title		string
 	Content		string
 	IsTop		bool
+	Lang		string
 }
 
 type RemoveRequestBody struct {
@@ -162,6 +170,7 @@ type RemoveRequestBody struct {
 }
 
 type ListPageRequestBody struct {
+	Lang 		string
 	Page		uint
 	Size		uint
 }

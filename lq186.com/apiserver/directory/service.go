@@ -103,9 +103,9 @@ func Update(dir *db.Directory, tokenUser *db.User) error {
 	return db.DB.Save(&oldDir).Error
 }
 
-func ListAll() ([]*db.Directory, error) {
+func ListAll(lang string) ([]*db.Directory, error) {
 	var dirs = []*db.Directory{}
-	err := db.DB.Order("ser_no desc, dir_name asc").Find(&dirs).Error
+	err := db.DB.Order("ser_no desc, dir_name asc").Where("lang = ?", lang).Find(&dirs).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		log.Log.Errorf("Query directory error, more info: %v", err)
 		return nil, err

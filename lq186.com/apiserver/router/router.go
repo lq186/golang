@@ -10,6 +10,7 @@ import (
 
 func init()  {
 	filter.Add("/api/.*", filter.OptionsHandle)
+	filter.Add("/api/.*", filter.LangHandle)
 	filter.Add("/api/auth/.*", filter.TokenHandle)
 }
 

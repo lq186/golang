@@ -17,6 +17,7 @@ import (
 
 const (
 	TokenUser = "TokenUser"
+	Lang = "Lang"
 )
 
 func RandomString(length int) string {

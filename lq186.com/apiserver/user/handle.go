@@ -82,28 +82,6 @@ func UpdateHandle(writer http.ResponseWriter, request *http.Request, filterData 
 	response.WriteJsonData(writer, response.Data{Code: response.Success, Data: data})
 }
 
-func CheckToken(writer http.ResponseWriter, request *http.Request) (bool, *db.User) {
-	err := request.ParseForm()
-	if err != nil {
-		response.WriteJsonData(writer, response.Data{Code: response.ParamError, Message: err.Error()})
-		return false, nil
-	}
-
-	token, err := common.RequestForm(request, "token", true)
-	if err != nil {
-		response.WriteJsonData(writer, response.Data{Code: response.TokenError, Message: err.Error()})
-		return false, nil
-	}
-
-	user, err := TokenUser(token)
-	if err != nil {
-		response.WriteJsonData(writer, response.Data{Code: response.TokenError, Message: err.Error()})
-		return false, nil
-	}
-
-	return true, user
-}
-
 type LoginBody struct {
 	Username	string `json:username`
 	Password	string `json:password`

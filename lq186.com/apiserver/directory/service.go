@@ -21,6 +21,14 @@ func Create(dir *db.Directory, tokenUser *db.User) error {
 	dir.ID = uuid
 	dir.UserID = tokenUser.ID
 
+	if dir.SerNo <= 0 {
+		maxSerNo, err := MaxSerNo()
+		if err != nil {
+			return err
+		}
+		dir.SerNo = maxSerNo
+	}
+
 	if "" != strings.Trim(dir.PID, " ") {
 
 		var pDir db.Directory
@@ -86,6 +94,10 @@ func Update(dir *db.Directory, tokenUser *db.User) error {
 
 	}
 
+	if dir.SerNo > 0 {
+		oldDir.SerNo = dir.SerNo
+	}
+
 	oldDir.DirName = dir.DirName
 
 	return db.DB.Save(&oldDir).Error
@@ -93,12 +105,25 @@ func Update(dir *db.Directory, tokenUser *db.User) error {
 
 func ListAll() ([]*db.Directory, error) {
 	var dirs = []*db.Directory{}
-	err := db.DB.Order("dir_name asc").Find(&dirs).Error
+	err := db.DB.Order("ser_no desc, dir_name asc").Find(&dirs).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		log.Log.Errorf("Query directory error, more info: %v", err)
 		return nil, err
 	}
 	return dirs, nil
+}
+
+func MaxSerNo() (uint, error) {
+	var dir = db.Directory{}
+	err := db.DB.Order("ser_no desc").First(&dir).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		log.Log.Errorf("Query directory error, more info: %v", err)
+		return 0, err
+	}
+	if err == gorm.ErrRecordNotFound {
+		return 1, nil
+	}
+	return dir.SerNo + 1, nil
 }
 
 func Remove(dir *db.Directory, tokenUser *db.User) error {

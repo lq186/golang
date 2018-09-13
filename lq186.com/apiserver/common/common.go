@@ -45,7 +45,15 @@ func JsonUnmarshal(request *http.Request, value interface{}) error {
 	return json.Unmarshal(body, value)
 }
 
-func RequestForm(request *http.Request, paramName string, emptyCheck bool) (string, error) {
+func RequestForm(parseForm bool, request *http.Request, paramName string, emptyCheck bool) (string, error) {
+
+	if parseForm {
+		err := request.ParseForm()
+		if err != nil {
+			return "", err
+		}
+	}
+
 	paramValues := request.Form[paramName]
 	if len(paramValues) == 0 {
 		return "", errors.New(fmt.Sprintf("Parameter %s not found", paramName))
@@ -71,4 +79,12 @@ func UUID() (string, error) {
 		return "", err
 	}
 	return strings.Replace(uuid.String(), "-", "", 4), nil
+}
+
+
+type Page struct {
+	Count		uint32
+	Page		uint
+	Size		uint
+	Content		interface{}
 }

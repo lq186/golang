@@ -34,6 +34,7 @@ func addJsonHeader(response http.ResponseWriter) {
 	response.Header().Set("Access-Control-Allow-Origin", "*")
 	response.Header().Add("Access-Control-Allow-Headers", "Content-type")
 	response.Header().Add("Access-Control-Allow-Headers", "Token")
+	response.Header().Add("Access-Control-Allow-Headers", "Lang")
 	response.Header().Add("Content-Type", "application/json;charset=UTF-8")
 }
 

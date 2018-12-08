@@ -106,6 +106,24 @@ func ListPageHandle(writer http.ResponseWriter, request *http.Request, filterDat
 	response.WriteJsonData(writer, response.Data{Code: response.Success, Data: page})
 }
 
+func ListAllHandle(writer http.ResponseWriter, request *http.Request, filterData map[string]interface{}) {
+
+	lang := filterData[common.Lang].(string)
+	dirId, err := common.RequestForm(true, request, "dirId", true)
+	if err != nil {
+		response.WriteJsonData(writer, response.Data{Code: response.ParamError, Message: "Paramter error, more info: " + err.Error()})
+		return
+	}
+
+	articles, err := ListAll(lang, dirId)
+	if err != nil {
+		response.WriteJsonData(writer, response.Data{Code: response.DBError, Message: "Query article error, more info: " + err.Error()})
+		return
+	}
+
+	response.WriteJsonData(writer, response.Data{Code: response.Success, Data: articles})
+}
+
 func RemoveHandle(writer http.ResponseWriter, request *http.Request, filterData map[string]interface{}) {
 	tokenUser := filterData[common.TokenUser].(*db.User)
 

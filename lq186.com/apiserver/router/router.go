@@ -27,6 +27,7 @@ func AddRouter() {
 	http.HandleFunc("/api/auth/art/add", filter.Filter(article.AddHandle))
 	http.HandleFunc("/api/auth/art/update", filter.Filter(article.UpdateHandle))
 	http.HandleFunc("/api/auth/art/remove", filter.Filter(article.RemoveHandle))
+	http.HandleFunc("/api/art/list-all", filter.Filter(article.ListAllHandle))
 	http.HandleFunc("/api/art/list-page", filter.Filter(article.ListPageHandle))
 	http.HandleFunc("/api/art/detail", filter.Filter(article.DetailHandle))
 }

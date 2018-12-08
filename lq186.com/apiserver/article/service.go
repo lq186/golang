@@ -163,6 +163,19 @@ func ListPage(requestBody *ListPageRequestBody) (*common.Page, error) {
 	return &page, nil
 }
 
+func ListAll(lang string, dirId string) (*[]*db.Article, error) {
+
+	var articles = []*db.Article{}
+
+	err := db.DB.Order("is_top desc, create_at desc").Where("lang = ? and dir_id = ?", lang, dirId).Find(&articles).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		log.Log.Errorf("query Articles failed, more info: %v", err)
+		return nil, err
+	}
+
+	return &articles, nil
+}
+
 func QueryDetail(id string) (*db.ArticleDetail, error) {
 
 	var detail = db.ArticleDetail{}
